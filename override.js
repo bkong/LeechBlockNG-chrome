@@ -99,7 +99,8 @@ function confirmAccess(options) {
 		$("#promptPasswordInput").focus();
 	} else if (ora == 8 && code) {
 		gAccessRequiredInput = code;
-		displayAccessCode(code, options["accessCodeImage"]);
+		numLines = displayAccessCode(code, options["accessCodeImage"]);
+		resizePromptInputHeight(numLines);
 		$("#promptAccessCode").dialog("open");
 		$("#promptAccessCodeInput").focus();
 	} else if (ora == 9 && orp) {
@@ -117,7 +118,8 @@ function confirmAccess(options) {
 			code += createAccessCode(64);
 		}
 		gAccessRequiredInput = code;
-		displayAccessCode(code, options["accessCodeImage"]);
+		numLines = displayAccessCode(code, options["accessCodeImage"]);
+		resizePromptInputHeight(numLines);
 		$("#promptAccessCodeInput").val("");
 		$("#promptAccessCode").dialog("open");
 		$("#promptAccessCodeInput").focus();
@@ -177,6 +179,22 @@ function displayAccessCode(code, asImage) {
 			codeText.appendChild(document.createElement("br"));
 		}
 	}
+
+	return lines.length;
+}
+
+// Convert #promptAccessCodeInput to a textarea and resize its height based
+// on the number of lines of the access code
+//
+function resizePromptInputHeight(numLines) {
+	if (numLines < 2) return;
+	let codeInput = getElement("promptAccessCodeInput");
+	let textarea = document.createElement("textarea");
+	textarea.id = codeInput.id;
+	textarea.font = codeInput.font;
+	textarea.rows = numLines;
+	textarea.cols = codeInput.size - 2; // need -2 to align input text with prompt
+	codeInput.replaceWith(textarea);
 }
 
 // Activate override
